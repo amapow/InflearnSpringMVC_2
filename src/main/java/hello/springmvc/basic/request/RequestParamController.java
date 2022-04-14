@@ -1,5 +1,6 @@
 package hello.springmvc.basic.request;
 
+import hello.springmvc.basic.HelloData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
@@ -63,7 +64,7 @@ public class RequestParamController {
     public String requestParamRequired(
             @RequestParam String username,
             @RequestParam(required = false) Integer age, HttpMethod method, HttpServletRequest request) {       //int는 자바의 기본타입으로 null을 넣을 수 없음, 따라서 null을 핸들링
-                                                                                                                //해야하는 경우 객체인 Integer를 사용하자
+        //해야하는 경우 객체인 Integer를 사용하자
         log.info("username={}, age={}, method={}, URIinfo={}", username, age, method, request.getRequestURI());
         return "ok";
     }
@@ -86,4 +87,31 @@ public class RequestParamController {
         return "ok";
     }
 
+//    @ResponseBody
+//    @RequestMapping("/model-attribute-v1")
+//    public String modelAttributeV1(HttpServletRequest request) {
+//        HelloData helloData = new HelloData();
+//        helloData.setUsername(request.getParameter("username"));
+//        helloData.setAge(Integer.parseInt(request.getParameter("age")));
+//        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+//        return "ok";
+//    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v1")
+    public String modelAttributeV1(@ModelAttribute HelloData helloData) {
+        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+        return "ok";
+    }
+
+    /**
+     * @ModelAttribute 생략가능
+     * String, int, Integer 같은 단순 타입은 @RequestParam이, 그 외 나머지는 @ModelAttribute가 바인딩한다. (Argument resolver로 지정해둔 타입 제외)
+     */
+    @ResponseBody
+    @RequestMapping("/model-attribute-v2")
+    public String modelAttributeV2(HelloData helloData) {
+        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+        return "ok";
+    }
 }
